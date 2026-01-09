@@ -7,7 +7,7 @@ const app = express();
 const name = process.env.NAME;
 
 //Define a route handler for the root URL ('/')
-app .get('/', (req, res) => {
+app.get('/', (req, res) => {
   res.send(`Welcome ${name}!`);
 });
 

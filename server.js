@@ -49,6 +49,57 @@ app.get('/students', (req, res) => {
   res.render('students', { title });
 })
 
+app.get('/teapot', (req, res, next) => {
+  const err = new Error('This is a test error');
+  err.status = 418;
+  next(err);
+})
+
+// ---------- Error Handling ----------
+// 404 Errors
+app.use((req, res, next) => {
+  const err = new Error('Page Not Found');
+  err.status = 404;
+  next(err);
+})
+
+// 418
+app.use((req, res, next) => {
+  const err = new Error('Brew coffee in a teapot?')
+  err.status = 418;
+  next(err);
+})
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  // Prevents infinte loops if response has already been sent
+  if (res.headersSent || res.finshed) {
+    return next(err);
+  }
+
+  // Determine status and template
+  const status = err.status || 500;
+  const template = status === 404 ? '404': status === 418 ? '418' : '500';
+
+  // Prepare data for the template
+  const context = {
+    title: status === 404 ? 'Page Not Found' : status === 418 ? 'Brew coffee in a teapot?!' : 'Server Error',
+    error: NODE_ENV === 'production' ? 'An error occured' : err.message,
+    stack: NODE_ENV === 'production' ? null : err.stack
+  };
+
+  // Render the correct error template
+  try {
+    res.status(status).render(`errors/${template}`, context);
+  } catch (renderErr) {
+    //If rendering fails, show simple error message
+    if (!res.headersSent) {
+      res.status(status).send(`<h1>Error ${status}</h1><p>An error occured.</p>`);
+    }
+  }
+})
+
+
 // ---------- Start the Server ----------
 if (NODE_ENV.includes('dev')) {
   const ws = await import('ws');

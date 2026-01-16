@@ -101,7 +101,8 @@ app.get('/catalog', (req, res) => {
   });
 });
 
-app.get('catalog/:courseId', (req, res) => {
+// ---------- Route Parameters ----------
+app.get('/catalog/:courseId', (req, res) => {
   // Extract course ID
   const courseId = req.params.courseId;
 

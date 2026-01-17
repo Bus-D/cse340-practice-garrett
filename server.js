@@ -20,10 +20,54 @@ app.set('views', path.join(__dirname, 'src/views'));
 
 const name = process.env.NAME;
 
-//Global template variables middleware
+//Global middleware
 
 app.use((req, res, next) => {
   res.locals.NODE_ENV = NODE_ENV.toLowerCase() || 'production';
+
+  next();
+})
+
+
+// Log URL requests
+app.use ((req, res, next) => {
+  if (!req.path.startsWith('/.')) {
+    console.log(`${req.method} ${req.url}`)
+  }
+  next();
+});
+
+// Add curent year for copyright
+app.use((req, res, next) => {
+  res.locals.currentYear = new Date().getFullYear();
+
+  next();
+})
+
+// Time based greeting 
+app.use ((req, res, next) => {
+  const currentHour = new Date().getHours();
+
+  if (currentHour < 12) {
+    const message = `Good morning! Ready to get some work done today?`;
+    res.locals.greeting = message;
+  } else if (currentHour < 17) {
+    const message = 'Afternoon! Not quite done yet, keep going!';
+    res.locals.greeting = message;
+  } else if (currentHour >= 17) {
+    const message = `You're still working at this hour? Take a break!`;
+    res.locals.greeting = message;
+  }
+
+  next();
+})
+
+// Random theme
+app.use((req, res, next) => {
+  const themes = ['blue-theme', 'green-theme', 'red-theme'];
+
+  const randomTheme = themes.random();
+  res.locals.bodyClass = randomTheme;
 
   next();
 })

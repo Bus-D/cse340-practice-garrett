@@ -108,7 +108,7 @@ app.get('/catalog/:courseId', (req, res, next) => {
   const course = courses[courseId];
 
   if (!course) {
-    const err = new Error(`Course ${courseId} not fuond`);
+    const err = new Error(`Course ${courseId} not found`);
   }
 
   // Get sort parameter (default to 'time')

@@ -66,9 +66,23 @@ app.use ((req, res, next) => {
 app.use((req, res, next) => {
   const themes = ['blue-theme', 'green-theme', 'red-theme'];
 
-  const randomTheme = themes.random();
+  const randomTheme = themes[Math.floor(Math.random() * themes.length)];
   res.locals.bodyClass = randomTheme;
 
+  next();
+})
+
+// Share query params
+app.use((req, res, next) => {
+  res.locals.queryParams = req.query || {};
+
+  next();
+})
+
+// Custom Headers
+const addDemoHeaders = ((req, res, next) => {
+  res.setHeader('X-Demo-Page', 'true');
+  res.setHeader('X-middleware-Demo', 'hello there');
   next();
 })
 
@@ -142,6 +156,12 @@ app.get('/catalog', (req, res) => {
   res.render('catalog', {
     title: 'Course Catalog',
     courses: courses
+  });
+});
+
+app.get('/demo', addDemoHeaders, (req, res) => {
+  res.render('demo', {
+    title: 'Middleware Demo Page'
   });
 });
 

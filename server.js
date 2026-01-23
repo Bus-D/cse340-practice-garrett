@@ -136,11 +136,6 @@ app.get('/about', (req, res) => {
   res.render('about', { title });
 });
 
-app.get('/products', (req, res) => {
-  const title = 'Our Products';
-  res.render('products', { title});
-});
-
 app.get('/students', (req, res) => {
   const title = 'Student List';
   res.render('students', { title });
@@ -227,7 +222,7 @@ app.use((err, req, res, next) => {
 
   // Determine status and template
   const status = err.status || 500;
-  const template = status === 404 ? '404': status === 418 ? '418' : '500';
+  const template = status === /*404 ? '404'*/ status === 418 ? '418' : '500';
 
   // Prepare data for the template
   const context = {
